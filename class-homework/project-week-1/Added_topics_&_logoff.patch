@@ -1,0 +1,113 @@
+Index: class-homework/project-week-1/src/main/java/com/mapsa/ServerWorker.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- class-homework/project-week-1/src/main/java/com/mapsa/ServerWorker.java	(revision f2ddaf084d71a0f84d86f48b9ffa0e2fc42e124a)
++++ class-homework/project-week-1/src/main/java/com/mapsa/ServerWorker.java	(date 1603970917697)
+@@ -4,13 +4,16 @@
+ 
+ import java.io.*;
+ import java.net.Socket;
++import java.util.HashSet;
+ import java.util.List;
++import java.util.Set;
+ 
+ public class ServerWorker extends Thread {
+     private final Socket socketClient;
+     private final Server server;
+     private OutputStream outputStream;
+     private String username = null;
++    private Set<String> topics = new HashSet<String>();
+ 
+     public ServerWorker(Socket socketClient, Server server) {
+         this.socketClient = socketClient;
+@@ -41,10 +44,72 @@
+                 String cmd = commands[0];
+                 if (cmd.equalsIgnoreCase("login")) {
+                     handleLogin(outputStream, commands);
++                } else if ("logoff".equalsIgnoreCase(cmd)) {
++                    handleLogoff();
++                    break;
++                } else if ("msg".equalsIgnoreCase(cmd)) {
++                    handleMsg(line);
++                } else if ("join".equalsIgnoreCase(cmd)) {
++                    handleTopic(commands);
++                } else if ("exit".equalsIgnoreCase(cmd)) {
++                    handleExit(commands); // Todo msg to topic
+                 }
+             }
+         }
+     }
++
++    private void handleExit(String[] commands) {
++        if (commands.length > 1) {
++            topics.remove(commands[1]);
++        }
++    }
++
++    private void handleTopic(String[] commands) {
++        if (commands.length > 1) {
++            topics.add(commands[1]);
++        }
++    }
++
++    private void handleMsg(String line) throws IOException {
++        String[] msgLine = StringUtils.split(line, null, 3);
++        System.out.println(msgLine[2]); // test
++
++        String sender = msgLine[1];
++        String body = msgLine[2];
++
++        boolean isTopic = sender.charAt(0) == '#';
++        List<ServerWorker> workerList = server.getWorkerList();
++        for (ServerWorker worker : workerList) {
++            if (isTopic) {
++                if (worker.isMemberOfTopic(sender)) {
++                    String msg = "from " + this.username + " To Topic:" + sender + " " + body + "\n";
++                    worker.send(msg);
++                }
++            } else {
++                if (sender.equals(worker.getUsername())) {
++                    String msg = "from " + this.username + ": " + body + "\n";
++                    worker.send(msg);
++                }
++            }
++
++        }
++
++    }
++
++    private boolean isMemberOfTopic(String sender) {
++        return topics.contains(sender);
++    }
++
++
++    private void handleLogoff() throws IOException {
++        server.removeUser(this);
++        String msgOffline = "offline " + username + "\n";
++        List<ServerWorker> workerList = server.getWorkerList();
++        for (ServerWorker worker : workerList) {
++            worker.send(msgOffline);
++        }
++        socketClient.close();
++    }
+ 
+     private void handleLogin(OutputStream outputStream, String[] commands) throws IOException {
+         String username = commands[1];
+Index: class-homework/project-week-1/.gitignore 
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- class-homework/project-week-1/.gitignore 	(revision f2ddaf084d71a0f84d86f48b9ffa0e2fc42e124a)
++++ class-homework/project-week-1/.gitignore 	(date 1603967048853)
+@@ -1,7 +1,7 @@
+ # Compiled class file
+ /target
+ *.iml
+-*.xml
++
+ 
+ *.class
+ 
