@@ -4,9 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ServerWorker extends Thread {
     private final Socket socketClient;
@@ -14,8 +12,12 @@ public class ServerWorker extends Thread {
     private OutputStream outputStream;
     private String username = null;
     private Set<String> topics = new HashSet<String>();
+    private Map<String,String> user;
+
+    private List<ServerWorker> workerList;
 
     public ServerWorker(Socket socketClient, Server server) {
+        user=new HashMap<>();
         this.socketClient = socketClient;
         this.server = server;
     }
@@ -38,6 +40,14 @@ public class ServerWorker extends Thread {
         this.outputStream = socketClient.getOutputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
+        Scanner scanner=new Scanner(System.in);
+        System.out.print("Please Enter Your Userpass File Address: ");
+        File file=new File(scanner.nextLine());
+        Scanner fileScanner=new Scanner(file);
+        while (fileScanner.hasNext()){
+            String[] s=StringUtils.split(fileScanner.nextLine());
+            user.put(s[0],s[1]);
+        }
         while ((line = reader.readLine()) != null) {
             String[] commands = StringUtils.split(line);
             if ((commands != null) && commands.length > 0) {
@@ -52,15 +62,22 @@ public class ServerWorker extends Thread {
                 } else if ("join".equalsIgnoreCase(cmd)) {
                     handleTopic(commands);
                 } else if ("exit".equalsIgnoreCase(cmd)) {
-                    handleExit(commands); // Todo msg to topic
+                    handleExit(commands); // Todo msg to topic (Done)
                 }
             }
         }
     }
 
-    private void handleExit(String[] commands) {
+    private void handleExit(String[] commands) throws IOException {
         if (commands.length > 1) {
             topics.remove(commands[1]);
+            workerList = server.getWorkerList();
+            for (ServerWorker worker : workerList) {
+                if(worker.isMemberOfTopic(commands[1])){
+                    String msg = this.username + " left the "+ commands[1];
+                    worker.send(msg);
+                }
+            }
         }
     }
 
@@ -73,12 +90,10 @@ public class ServerWorker extends Thread {
     private void handleMsg(String line) throws IOException {
         String[] msgLine = StringUtils.split(line, null, 3);
         System.out.println(msgLine[2]); // test
-
         String sender = msgLine[1];
         String body = msgLine[2];
-
         boolean isTopic = sender.charAt(0) == '#';
-        List<ServerWorker> workerList = server.getWorkerList();
+        workerList = server.getWorkerList();
         for (ServerWorker worker : workerList) {
             if (isTopic) {
                 if (worker.isMemberOfTopic(sender)) {
@@ -91,20 +106,17 @@ public class ServerWorker extends Thread {
                     worker.send(msg);
                 }
             }
-
         }
-
     }
 
     private boolean isMemberOfTopic(String sender) {
         return topics.contains(sender);
     }
 
-
     private void handleLogoff() throws IOException {
         server.removeUser(this);
         String msgOffline = "offline " + username + "\n";
-        List<ServerWorker> workerList = server.getWorkerList();
+        workerList = server.getWorkerList();
         for (ServerWorker worker : workerList) {
             worker.send(msgOffline);
         }
@@ -114,14 +126,13 @@ public class ServerWorker extends Thread {
     private void handleLogin(OutputStream outputStream, String[] commands) throws IOException {
         String username = commands[1];
         String password = commands[2];
-        if ((username.equals("ali") && password.equals("123456")) ||
-                (username.equals("esmaeil") && password.equals("123456"))) { // Todo input from file
+        if (authenitication(username,password)) { // Todo input from file (Done)
             this.outputStream.write("Ok Login \n".getBytes());
             this.username = username;
-            List<ServerWorker> workerList = server.getWorkerList();
+            workerList = server.getWorkerList();
             // other user's
             String onlineMsg = "online " + username + "\n";
-            for (ServerWorker worker : workerList) { // Todo For i Or foreach
+            for (ServerWorker worker : workerList) { // Todo For i Or foreach (Done)
                 if (worker.getUsername() != null) {
                     if (!username.equals(worker.getUsername())) {
                         worker.send(onlineMsg);
@@ -136,10 +147,17 @@ public class ServerWorker extends Thread {
                     }
                 }
             }
-
         } else {
             outputStream.write("Error Login".getBytes());
         }
+    }
+
+    private boolean authenitication(String username, String password) {
+        if(user.containsKey(username)){
+            return user.get(username).equals(password);
+        }
+        return false;
+
     }
 
     private void send(String onlineMsg) throws IOException {

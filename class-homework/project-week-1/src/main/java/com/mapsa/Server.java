@@ -1,14 +1,17 @@
 package com.mapsa;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Server extends Thread {
     private final int port;
     private List<ServerWorker> workerList = new ArrayList<ServerWorker>();
+
 
     public Server(int port) {
         this.port = port;
@@ -17,6 +20,7 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
+
             ServerSocket serverSocket = new ServerSocket(port);
             System.out.println("start server... ");
             while (true) {
