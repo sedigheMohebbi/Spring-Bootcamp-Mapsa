@@ -1,4 +1,4 @@
-package come.mapsa.domain;
+package com.mapsa.domain;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -6,10 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Bill {
+public class Category {
     private long id;
-    private String billNumber;
-    private double total;
+    private String name;
     private String remarks;
     private long lockVersion;
 
@@ -24,23 +23,13 @@ public class Bill {
     }
 
     @Basic
-    @Column(name = "BILL_NUMBER")
-    public String getBillNumber() {
-        return billNumber;
+    @Column(name = "NAME")
+    public String getName() {
+        return name;
     }
 
-    public void setBillNumber(String billNumber) {
-        this.billNumber = billNumber;
-    }
-
-    @Basic
-    @Column(name = "TOTAL")
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Basic
@@ -68,25 +57,20 @@ public class Bill {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Bill bill = (Bill) o;
+        Category category = (Category) o;
 
-        if (id != bill.id) return false;
-        if (Double.compare(bill.total, total) != 0) return false;
-        if (lockVersion != bill.lockVersion) return false;
-        if (billNumber != null ? !billNumber.equals(bill.billNumber) : bill.billNumber != null) return false;
-        if (remarks != null ? !remarks.equals(bill.remarks) : bill.remarks != null) return false;
+        if (id != category.id) return false;
+        if (lockVersion != category.lockVersion) return false;
+        if (name != null ? !name.equals(category.name) : category.name != null) return false;
+        if (remarks != null ? !remarks.equals(category.remarks) : category.remarks != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (billNumber != null ? billNumber.hashCode() : 0);
-        temp = Double.doubleToLongBits(total);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (remarks != null ? remarks.hashCode() : 0);
         result = 31 * result + (int) (lockVersion ^ (lockVersion >>> 32));
         return result;

@@ -1,17 +1,14 @@
-package come.mapsa.domain;
+package com.mapsa.domain;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.sql.Timestamp;
+import javax.persistence.*;
 
 @Entity
-public class Cart {
+public class Classification {
     private long id;
-    private Timestamp cartDate;
+    private String name;
     private String remarks;
     private long lockVersion;
+    private Category categoryByCategoryId;
 
     @Id
     @Column(name = "ID")
@@ -24,13 +21,13 @@ public class Cart {
     }
 
     @Basic
-    @Column(name = "CART_DATE")
-    public Timestamp getCartDate() {
-        return cartDate;
+    @Column(name = "NAME")
+    public String getName() {
+        return name;
     }
 
-    public void setCartDate(Timestamp cartDate) {
-        this.cartDate = cartDate;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Basic
@@ -58,12 +55,12 @@ public class Cart {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Cart cart = (Cart) o;
+        Classification that = (Classification) o;
 
-        if (id != cart.id) return false;
-        if (lockVersion != cart.lockVersion) return false;
-        if (cartDate != null ? !cartDate.equals(cart.cartDate) : cart.cartDate != null) return false;
-        if (remarks != null ? !remarks.equals(cart.remarks) : cart.remarks != null) return false;
+        if (id != that.id) return false;
+        if (lockVersion != that.lockVersion) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (remarks != null ? !remarks.equals(that.remarks) : that.remarks != null) return false;
 
         return true;
     }
@@ -71,9 +68,19 @@ public class Cart {
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (cartDate != null ? cartDate.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (remarks != null ? remarks.hashCode() : 0);
         result = 31 * result + (int) (lockVersion ^ (lockVersion >>> 32));
         return result;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "CATEGORY_ID", referencedColumnName = "ID", nullable = false)
+    public Category getCategoryByCategoryId() {
+        return categoryByCategoryId;
+    }
+
+    public void setCategoryByCategoryId(Category categoryByCategoryId) {
+        this.categoryByCategoryId = categoryByCategoryId;
     }
 }

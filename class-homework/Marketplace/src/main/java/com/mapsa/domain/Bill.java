@@ -1,4 +1,4 @@
-package come.mapsa.domain;
+package com.mapsa.domain;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -6,11 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Lineitem {
+public class Bill {
     private long id;
-    private long quantity;
-    private double price;
-    private long productId;
+    private String billNumber;
+    private double total;
     private String remarks;
     private long lockVersion;
 
@@ -25,33 +24,23 @@ public class Lineitem {
     }
 
     @Basic
-    @Column(name = "QUANTITY")
-    public long getQuantity() {
-        return quantity;
+    @Column(name = "BILL_NUMBER")
+    public String getBillNumber() {
+        return billNumber;
     }
 
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
-    }
-
-    @Basic
-    @Column(name = "PRICE")
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
+    public void setBillNumber(String billNumber) {
+        this.billNumber = billNumber;
     }
 
     @Basic
-    @Column(name = "PRODUCT_ID")
-    public long getProductId() {
-        return productId;
+    @Column(name = "TOTAL")
+    public double getTotal() {
+        return total;
     }
 
-    public void setProductId(long productId) {
-        this.productId = productId;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     @Basic
@@ -79,14 +68,13 @@ public class Lineitem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Lineitem lineitem = (Lineitem) o;
+        Bill bill = (Bill) o;
 
-        if (id != lineitem.id) return false;
-        if (quantity != lineitem.quantity) return false;
-        if (Double.compare(lineitem.price, price) != 0) return false;
-        if (productId != lineitem.productId) return false;
-        if (lockVersion != lineitem.lockVersion) return false;
-        if (remarks != null ? !remarks.equals(lineitem.remarks) : lineitem.remarks != null) return false;
+        if (id != bill.id) return false;
+        if (Double.compare(bill.total, total) != 0) return false;
+        if (lockVersion != bill.lockVersion) return false;
+        if (billNumber != null ? !billNumber.equals(bill.billNumber) : bill.billNumber != null) return false;
+        if (remarks != null ? !remarks.equals(bill.remarks) : bill.remarks != null) return false;
 
         return true;
     }
@@ -96,10 +84,9 @@ public class Lineitem {
         int result;
         long temp;
         result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (int) (quantity ^ (quantity >>> 32));
-        temp = Double.doubleToLongBits(price);
+        result = 31 * result + (billNumber != null ? billNumber.hashCode() : 0);
+        temp = Double.doubleToLongBits(total);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (int) (productId ^ (productId >>> 32));
         result = 31 * result + (remarks != null ? remarks.hashCode() : 0);
         result = 31 * result + (int) (lockVersion ^ (lockVersion >>> 32));
         return result;

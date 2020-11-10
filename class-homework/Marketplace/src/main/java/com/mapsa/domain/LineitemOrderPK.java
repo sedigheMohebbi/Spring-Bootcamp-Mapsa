@@ -1,21 +1,21 @@
-package come.mapsa.domain;
+package com.mapsa.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-public class LineitemCartPK implements Serializable {
-    private long cartId;
+public class LineitemOrderPK implements Serializable {
+    private long orderId;
     private long lineitemId;
 
-    @Column(name = "CART_ID")
+    @Column(name = "ORDER_ID")
     @Id
-    public long getCartId() {
-        return cartId;
+    public long getOrderId() {
+        return orderId;
     }
 
-    public void setCartId(long cartId) {
-        this.cartId = cartId;
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
     }
 
     @Column(name = "LINEITEM_ID")
@@ -33,9 +33,9 @@ public class LineitemCartPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        LineitemCartPK that = (LineitemCartPK) o;
+        LineitemOrderPK that = (LineitemOrderPK) o;
 
-        if (cartId != that.cartId) return false;
+        if (orderId != that.orderId) return false;
         if (lineitemId != that.lineitemId) return false;
 
         return true;
@@ -43,7 +43,7 @@ public class LineitemCartPK implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = (int) (cartId ^ (cartId >>> 32));
+        int result = (int) (orderId ^ (orderId >>> 32));
         result = 31 * result + (int) (lineitemId ^ (lineitemId >>> 32));
         return result;
     }

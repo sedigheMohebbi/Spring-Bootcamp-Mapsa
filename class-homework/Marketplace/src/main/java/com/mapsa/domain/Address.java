@@ -1,4 +1,4 @@
-package come.mapsa.domain;
+package com.mapsa.domain;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
