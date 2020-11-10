@@ -13,10 +13,7 @@ exception
     when others then dbms_output.put_line('Sequence category_seq did not exist');
 end;
 /
-
-
-create table category
-(
+create table category(
     id           number(19)           not null,
     name         nvarchar2(200)       not null,
     remarks      nvarchar2(400),
@@ -24,7 +21,6 @@ create table category
     CONSTRAINT category_pk_id primary key (id),
     constraint category_un_name unique (name)
 );
-
 /
 
 create sequence classification_seq

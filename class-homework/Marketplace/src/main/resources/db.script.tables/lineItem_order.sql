@@ -21,6 +21,7 @@ create table lineItem_order(
     constraint lineItem_order_pk_line_order primary key (lineItem_id,order_id)
 
 );
+/
 create sequence lineItem_order_seq
     minvalue 10000 maxvalue 9999999999999999999 cycle
     start with 10000 increment by 1000 cache 1000;

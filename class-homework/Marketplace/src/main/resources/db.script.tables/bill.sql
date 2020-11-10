@@ -23,6 +23,7 @@ create table bill(
     constraint bill_un_bill_number unique (bill_number)
 
 );
+/
 create sequence bill_seq
     minvalue 10000 maxvalue 9999999999999999999 cycle
     start with 10000 increment by 1000 cache 1000;

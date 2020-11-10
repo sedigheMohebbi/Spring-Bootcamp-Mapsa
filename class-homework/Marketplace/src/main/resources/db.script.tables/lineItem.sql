@@ -11,6 +11,7 @@ begin
 exception
     when others then dbms_output.put_line('Sequence lineItem_seq did not exist');
 end;
+/
 create table lineItem(
     id           number(19)           not null,
     quantity         number(19)        not null,
@@ -23,7 +24,7 @@ create table lineItem(
     constraint lineItem_fk_vendor_id foreign key (vendor_id) references vendor
 
 );
-
+/
 create sequence lineItem_seq
     minvalue 10000 maxvalue 9999999999999999999 cycle
     start with 10000 increment by 1000 cache 1000;

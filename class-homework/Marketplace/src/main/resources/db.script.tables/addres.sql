@@ -11,6 +11,7 @@ begin
 exception
     when others then dbms_output.put_line('Sequence address_seq did not exist');
 end;
+/
 create table address(
     id           number(19)           not null,
     city         varchar (200)        not null,
@@ -28,7 +29,7 @@ create table address(
     constraint address_fk_customer_id foreign key (customer_id) references customer
 );
 
-
+/
 create sequence address_seq
     minvalue 10000 maxvalue 9999999999999999999 cycle
     start with 10000 increment by 1000 cache 1000;

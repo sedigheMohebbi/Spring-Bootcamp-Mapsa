@@ -11,6 +11,7 @@ begin
 exception
     when others then dbms_output.put_line('Sequence vendor_seq did not exist');
 end;
+/
 create table vendor(
     id           number(19)           not null,
     phone        varchar(200)         not null,
@@ -22,7 +23,7 @@ create table vendor(
 
 );
 
-
+/
 create sequence vendor_seq
     minvalue 10000 maxvalue 9999999999999999999 cycle
     start with 10000 increment by 1000 cache 1000;

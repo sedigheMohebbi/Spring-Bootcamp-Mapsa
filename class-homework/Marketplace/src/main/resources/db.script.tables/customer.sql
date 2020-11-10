@@ -11,8 +11,8 @@ begin
 exception
     when others then dbms_output.put_line('Sequence customer_seq did not exist');
 end;
-create table customer
-(
+/
+create table customer(
     id              number(19)           not null,
     customer_number varchar(200)         not null,
     first_name      varchar(200)         not null,
@@ -27,8 +27,7 @@ create table customer
 
 
 );
-
-
+/
 create sequence customer_seq
     minvalue 10000 maxvalue 9999999999999999999 cycle
     start with 10000 increment by 1000 cache 1000;

@@ -26,8 +26,8 @@ create table "ORDER"(
     constraint order_un_order_number unique (order_number),
     constraint order_fk_bill_id foreign key (bill_id) references bill,
     constraint order_fk_cart_id foreign key (cart_id) references cart
-
 );
+/
 create sequence order_seq
     minvalue 10000 maxvalue 9999999999999999999 cycle
     start with 10000 increment by 1000 cache 1000;

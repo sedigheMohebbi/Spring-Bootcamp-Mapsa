@@ -26,8 +26,8 @@ create table payment(
     constraint payment_un_payment_number unique (payment_number),
     constraint payment_fk_bill_id foreign key (bill_id) references bill,
     constraint payment_fk_wallet_id foreign key (wallet_id) references wallet
-
 );
+/
 create sequence payment_seq
     minvalue 10000 maxvalue 9999999999999999999 cycle
     start with 10000 increment by 1000 cache 1000;

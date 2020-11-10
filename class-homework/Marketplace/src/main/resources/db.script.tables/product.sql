@@ -25,8 +25,8 @@ create table product(
     constraint product_un_product_number unique (product_number),
     constraint product_un_name unique (name),
     constraint product_fk_classification_id foreign key (classification_id) references classification
-
 );
+/
 create sequence product_seq
     minvalue 10000 maxvalue 9999999999999999999 cycle
     start with 10000 increment by 1000 cache 1000;
