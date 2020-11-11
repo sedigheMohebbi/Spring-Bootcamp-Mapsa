@@ -21,7 +21,7 @@ create table address(
     street         varchar(200)    not null,
     phone         varchar(15)      not null,
     vendor_id  number(19)           ,
-    customer_id  number(19)           ,
+    customer_id  number(19)            ,
     remarks      nvarchar2(400),
     lock_version number(19) default 1 not null,
     constraint address_pk_id primary key (id),
